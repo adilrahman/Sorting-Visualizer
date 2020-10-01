@@ -1,5 +1,6 @@
 import pygame
 import random
+
 pygame.init()
 pygame.mixer.pre_init(frequency = 44100, size = 16,channels = 1, buffer = 256)
 screen = pygame.display.set_mode((1000,1000))
@@ -11,40 +12,51 @@ pygame.display.set_caption("Sorting Algo")
 font = pygame.font.Font(None,100)
 NameFont = pygame.font.Font(None,62)
 optionsFont = pygame.font.Font(None,32)
+numbersFont = pygame.font.Font(None,14)
 
 x , y = 5,500
-width = 10
-height = [random.randint(-240,430) for x in range(66)] 
+width = 17
+spacing_btw_height = 23
+height = [random.randint(-240,430) for x in range(43)] 
 run = True
 execute = False
 
-def show(height,c1=0,c2=1,algo=(1,1)):
+# height updating function
+def show(height,c1=0,c2=len(height)-1,algo=(1,1)):
     for i in range(len(height)):
+        no = numbersFont.render(str(height[i]),False,(0,0,0))
+        screen.blit(no,(x+23*i,900))
         if not(i == c1 or c2 == i):
-            pygame.draw.rect(screen,(0,0,0),(x+15*i,y,width,-1*height[i]))
+            pygame.draw.rect(screen,(0,0,0),(x+spacing_btw_height*i,y,width,-1*height[i]))
         elif c2 == i:
-            pygame.draw.rect(screen,(0,255,0),(x+15*i,y,width,-1*height[i]))
+            pygame.draw.rect(screen,(0,255,0),(x+spacing_btw_height*i,y,width,-1*height[i]))
         else:
-            pygame.draw.rect(screen,(0,0,255),(x+15*i,y,width,-1*height[i]))
+            pygame.draw.rect(screen,(0,0,255),(x+spacing_btw_height*i,y,width,-1*height[i]))
         if algo[0] == "selection" and i <= algo[1]:
-            pygame.draw.rect(screen,(255,255,0),(x+15*i,y,width,-1*height[i]))
+            pygame.draw.rect(screen,(255,255,0),(x+spacing_btw_height*i,y,width,-1*height[i]))
 
 
-
+# positive negative separation (Rect is used intead of line)
 def line():
     a = pygame.Rect(0,500,1000,4)
     pygame.draw.rect(screen,(255,0,0),a)
 
+
+# Working Algo name (Not Completed)
 def show_name():
     name = NameFont.render(f"SORTING ALGO ",False,(120,110,255))
     screen.blit(name,(350,40))
 
+
+# Alogrithem List (Not Completed)
 def show_options():
     option1 = optionsFont.render(f"1 : Bubble Sort",False,(0,0,0)) 
     option2 = optionsFont.render(f"1 : Bubble Sort",False,(0,0,0)) 
     screen.blit(option1,(700,20))
     screen.blit(option2,(700,40))
 
+
+# updating screen (for reduce redentency)
 def re_Draw(c1=0,c2=1,algo=(1,1)):
         screen.fill((255,255,255))
         show(height,c1,c2,algo)
@@ -54,13 +66,18 @@ def re_Draw(c1=0,c2=1,algo=(1,1)):
         line()
         pygame.display.update()
         ite.play()
-        pygame.time.delay(8)
+        pygame.time.delay(50)
+
+
+#Displaying positive and negative Sides
 
 def display_side():
     positive = font.render("+",False,(10,255,0))
     negative = font.render("-",False,(255,0,0)) 
     screen.blit(negative,(20,0))
     screen.blit(positive,(950,900))
+
+#Sorting Algorithems
 
 def BubbleSort():
     global height
@@ -71,6 +88,7 @@ def BubbleSort():
             if height[j] > height[j+1]:
                 height[j+1],height[j] = height[j],height[j+1]
                 re_Draw(j,j+1)
+
 
 def SelectionSort():
     global height
@@ -83,15 +101,16 @@ def SelectionSort():
         height[minValue],height[i] = height[i],height[minValue]
         re_Draw(minValue,j,algo=("selection",i))
 
+
 def InsertionSort():                                                          
-   global height
-   for i in range(1,len(height)):  
-      j = i-1
-      while j >= 0 and height[j] > height[j+1]:
-            height[j],height[j+1] = height[j+1],height[j]
-            j -= 1
-            re_Draw(i,j+1)
-        
+    global height
+    for i in range(1,len(height)):  
+        j = i-1
+        while j >= 0 and height[j] > height[j+1]:
+                height[j],height[j+1] = height[j+1],height[j]
+                j -= 1
+                re_Draw(i,j+1)
+            
 def quickSort(arr,left,right):
     if right - left <= 0: #Terminating Condition 
         return 
@@ -117,7 +136,9 @@ def quickSort(arr,left,right):
         
     quickSort(arr,left,i - 1)
     quickSort(arr,i,right)
-a = 4
+
+
+a = 3
 while run:
     pygame.time.delay(10)
     for event in pygame.event.get():
@@ -128,7 +149,7 @@ while run:
                 execute = True
             if event.key == pygame.K_r:
                 execute = False
-                height = [random.randint(-240,430) for x in range(66)] 
+                height = [random.randint(-240,430) for x in range(91)] 
 
 
     screen.fill((255,255,255))
