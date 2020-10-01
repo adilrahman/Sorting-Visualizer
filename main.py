@@ -111,6 +111,8 @@ def InsertionSort():
                 j -= 1
                 re_Draw(i,j+1)
             
+
+
 def quickSort(arr,left,right):
     if right - left <= 0: #Terminating Condition 
         return 
@@ -138,7 +140,7 @@ def quickSort(arr,left,right):
     quickSort(arr,i,right)
 
 
-a = 3
+a = 1
 while run:
     pygame.time.delay(10)
     for event in pygame.event.get():
@@ -149,7 +151,7 @@ while run:
                 execute = True
             if event.key == pygame.K_r:
                 execute = False
-                height = [random.randint(-240,430) for x in range(91)] 
+                height = [random.randint(-240,430) for x in range(43)] 
 
 
     screen.fill((255,255,255))
