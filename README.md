@@ -8,10 +8,12 @@
 
 ### Working 
 1. Insert algorithm name into the text field **AND** press ` ENTER `
- Available options :  ``
+ + Available options :  ``
     bubble, selection, insertion, quick
     ``
+    ![before](images/before.png)
 2.  Press ` Space ` button to `RUN`
+ ![after](images/after.png)
 3.  Press `r` to `RESTART` 
 
 
