@@ -1,25 +1,38 @@
 import pygame
 import random
 
+#initial things
 pygame.init()
 pygame.mixer.pre_init(frequency = 44100, size = 16,channels = 1, buffer = 256)
 screen = pygame.display.set_mode((1000,1000))
-ite = pygame.mixer.Sound('./Sounds/Banner.wav')
+ite = pygame.mixer.Sound('./Sounds/Banner.wav') #iteration Sound
 completed =  pygame.mixer.Sound('./Sounds/complete.wav')
 complete_ = False
-pygame.display.set_caption("Sorting Algo")
+pygame.display.set_caption("Sorting Visualizer")
 
+
+#fonts
 font = pygame.font.Font(None,100)
-NameFont = pygame.font.Font(None,62)
+NameFont = pygame.font.Font(None,45)
 optionsFont = pygame.font.Font(None,32)
 numbersFont = pygame.font.Font(None,14)
+inputFont = pygame.font.Font(None,32)
 
+# bars settings
 x , y = 5,500
 width = 17
 spacing_btw_height = 23
 height = [random.randint(-240,430) for x in range(43)] 
 run = True
 execute = False
+
+#Input Field
+inputRect = pygame.Rect(425,940,150,32)
+userText = ""
+inputRectColor = (0,0,0)
+inputActivate = False
+
+
 
 # height updating function
 def show(height,c1=0,c2=len(height)-1,algo=(1,1)):
@@ -44,8 +57,8 @@ def line():
 
 # Working Algo name (Not Completed)
 def show_name():
-    name = NameFont.render(f"SORTING ALGO ",False,(120,110,255))
-    screen.blit(name,(350,40))
+    name = NameFont.render(f"Sorting Visualizer",False,(0,100,255))
+    screen.blit(name,(370,10))
 
 
 # Alogrithem List (Not Completed)
@@ -66,16 +79,17 @@ def re_Draw(c1=0,c2=1,algo=(1,1)):
         line()
         pygame.display.update()
         ite.play()
-        pygame.time.delay(50)
+        pygame.time.delay(20)
 
 
 #Displaying positive and negative Sides
-
 def display_side():
     positive = font.render("+",False,(10,255,0))
     negative = font.render("-",False,(255,0,0)) 
     screen.blit(negative,(20,0))
-    screen.blit(positive,(950,900))
+    screen.blit(positive,(950,0))
+
+
 
 #Sorting Algorithems
 
@@ -112,7 +126,6 @@ def InsertionSort():
                 re_Draw(i,j+1)
             
 
-
 def quickSort(arr,left,right):
     if right - left <= 0: #Terminating Condition 
         return 
@@ -140,33 +153,63 @@ def quickSort(arr,left,right):
     quickSort(arr,i,right)
 
 
-a = 1
+a = 2
+options = ["bubble","selection","insertion","quick"]
+
 while run:
     pygame.time.delay(10)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                execute = True
-            if event.key == pygame.K_r:
-                execute = False
-                height = [random.randint(-240,430) for x in range(43)] 
 
+        if event.type == pygame.KEYDOWN:
+            if inputActivate:
+                if event.key == pygame.K_RETURN:
+                    inputActivate = False
+                    inputRectColor = (0,0,0)
+                elif event.key == pygame.K_BACKSPACE :
+                    userText = userText[:-1]
+                else:
+                    userText += event.unicode
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if inputRect.collidepoint(event.pos):
+                inputActivate = True
+                inputRectColor = (0,150,255)
+        if event.type == pygame.KEYDOWN:
+            if not inputActivate:
+                if event.key == pygame.K_SPACE:
+                    execute = True
+                if event.key == pygame.K_r:
+                    execute = False
+                    height = [random.randint(-240,430) for x in range(43)] 
+            
+    
 
     screen.fill((255,255,255))
+    pygame.draw.rect(screen,inputRectColor,inputRect,2)
+    input_field = inputFont.render(userText,False,(0,0,0))
+    screen.blit(input_field,(inputRect.x + 5,inputRect.y + 5))
+    inputRect.w = max(100,input_field.get_width() + 10)
     show(height)
     display_side()
     show_name()
     line()
+
+    if not inputActivate:
+        if userText.lower() in options:
+            a = options.index(userText.lower()) 
+        else:
+            execute = False
+
     if execute:
-        if a == 1:
+        if a == 0:
+            BubbleSort()
+        elif a == 1:
             SelectionSort()
         elif a == 2:
-            BubbleSort()
-        elif a == 3:
             InsertionSort()
-        elif a == 4:
+        elif a == 3:
             quickSort(height,0,len(height)-1)
         execute = False
 
